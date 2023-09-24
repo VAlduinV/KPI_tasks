@@ -6,6 +6,13 @@ import mplcyberpunk
 
 plt.style.use("cyberpunk")
 
+"""
+     Завдання 3 із завантаження даних
+     Завантажте дані по вказаному посиланню, відкрийте як csv файл, в параметрах функції 
+     вкажіть що немає заголовка в першому рядку через додатковий параметр has_header = False, виведіть кілька рядків таблиці.
+     https://raw.githubusercontent.com/karlrupp/microprocessor-trend-data/master/50yrs/transistors.dat
+"""
+
 # Завантажити дані CSV без заголовка
 data = pl.read_csv(
      'https://raw.githubusercontent.com/karlrupp/microprocessor-trend-data/master/50yrs/transistors.dat',

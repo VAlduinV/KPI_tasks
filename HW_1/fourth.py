@@ -5,6 +5,12 @@ import mplcyberpunk
 
 plt.style.use("cyberpunk")
 
+"""
+    Завдання 4 Знайти мінімуми і максимуми на запису потенціалу нейрона
+    Завантажити файл NeuronRecords.*, узяти окрему колонку із записом, вивести перелік точок в таблицях, 
+    а також застосувати код для виводу графіка ISI на нових даних
+"""
+
 # Ініціалізація системи логування з режимом запису 'w' (перезапис)
 logging.basicConfig(filename='neuron_analysis.log', level=logging.INFO, encoding='utf-8', filemode='w')  # Додайте filemode='w'
 
