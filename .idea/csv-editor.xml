@@ -17,21 +17,14 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\HW_1\NeuronRecords.csv.csv">
+        <entry key="\HW_1\Official hrivnya exchange rates.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="\HW_1\Офіційний курс гривні щодо іноземних валют.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\UATown.csv">
+        <entry key="\HW_1\UATown.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

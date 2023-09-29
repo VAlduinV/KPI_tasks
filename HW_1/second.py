@@ -1,25 +1,32 @@
 import pandas as pd
+from matplotlib import pyplot as plt
+import polars as pl
+import mplcyberpunk
+
+plt.style.use("cyberpunk")
 
 
 def fnc():
-    """
-    Курс гривні перейти на сторінку https://bank.gov.ua/ua/markets/exchangerate-chart?cn%5B%5D=EUR&startDate=01.01
-    .1999&endDate= , завантажити собі на локальний комп'ютер в файл Official_hrivnya.csv,
-    перенести файл в Google Colab і відкрити звідти.
-    """
-    # Шлях до файлу на вашому локальному комп'ютері
-    file_path = r'C:\Users\prime\PycharmProjects\KPI_tasks\HW_1\Official_hrivnya.csv'
-
-    # Завантажуємо CSV-файл у DataFrame
     try:
-        df = pd.read_csv(file_path)
-        # Операції з DataFrame
-        # Наприклад, можна вивести перші 5 рядків
-        print(df.head())
+        # Читання CSV файлу
+        hrv = pl.read_csv('Official hrivnya exchange rates.csv')
+        print(hrv.head())
+
+        # Перетворення типу даних для колонки "Date"
+        T_hrv = hrv.with_columns(hrv["Date"].str.strptime(pl.Date, "%d.%m.%Y", strict=False))
+        hrv_rate = hrv["Official hrivnya exchange rates, UAH"] / hrv["Unit"]
+
+        # Відображення графіку курсу євро
+        plt.plot(T_hrv["Date"].to_list(), hrv_rate.to_list(), 'r', label='euro')
+        plt.legend()
+        plt.title('Курс Євро')
+        mplcyberpunk.add_glow_effects()
+        plt.show()
+
     except FileNotFoundError:
         print("Файл не знайдено. Переконайтеся, що шлях до файлу правильний.")
     except Exception as e:
-        print(f"Виникла помилка при читанні файлу: {e}")
+        print(f"Виникла помилка: {e}")
 
 
 def infla_df():
