@@ -9,7 +9,7 @@ plt.style.use("cyberpunk")
 def fnc():
     try:
         # Читання CSV файлу
-        hrv = pl.read_csv('Official hrivnya exchange rates.csv')
+        hrv = pl.read_csv('data/Official hrivnya exchange rates.csv')
         print(hrv.head())
 
         # Перетворення типу даних для колонки "Date"
@@ -33,7 +33,7 @@ def infla_df():
     """
         Дані інфляції прямо завантажити з 136-indeksi-spozhivchikh-tsin.csv
     """
-    file_path = r'C:\Users\prime\PycharmProjects\KPI_tasks\HW_1\136-indeksi-spozhivchikh-tsin.csv'
+    file_path = r'/HW_1/data/136-indeksi-spozhivchikh-tsin.csv'
     # Завантажте дані в DataFrame
     df = pd.read_csv(file_path)
     print(df.head())
@@ -45,7 +45,7 @@ def func_idx():
         вказати параметр sheet_id = 4
     """
     # Шлях до файлу на вашому комп'ютері
-    file_path = r'C:\Users\prime\PycharmProjects\KPI_tasks\HW_1\136.xlsx'
+    file_path = r'/HW_1/data/136.xlsx'
 
     # Індекс листа, який вас цікавить (4-ий лист)
     sheet_id = 3  # Зауважте, що листи нумеруються з нуля

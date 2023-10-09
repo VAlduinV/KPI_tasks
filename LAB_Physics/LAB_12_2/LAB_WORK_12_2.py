@@ -13,7 +13,7 @@ def func(x, a):
 
 
 # Завантажити дані з Excel-файлу
-file_path = '../Іванов_Віктор.xlsx'
+file_path = './LAB_12_2/CC.xlsx'
 df = pd.read_excel(file_path)
 print(df.columns)
 

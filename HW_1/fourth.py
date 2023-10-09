@@ -15,7 +15,7 @@ plt.style.use("cyberpunk")
 logging.basicConfig(filename='neuron_analysis.log', level=logging.INFO, encoding='utf-8', filemode='w')  # Додайте filemode='w'
 
 # Завантаження даних з файлу з вказанням кодування
-data = pd.read_csv('NeuronRecords.csv', encoding='utf-8')  # Замініть 'NeuronRecords.csv' на відповідний шлях до вашого файлу
+data = pd.read_csv('data/NeuronRecords.csv', encoding='utf-8')  # Замініть 'NeuronRecords.csv' на відповідний шлях до вашого файлу
 
 # Перегляд першого стовпця даних (часу)
 time = data['time']
