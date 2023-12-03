@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 import mplcyberpunk
+from scipy.special import gamma
 
 plt.style.use("cyberpunk")
 
@@ -11,7 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 def p_x_theoretical(x):
-    return 1 / (np.pi * np.sqrt(1 - x**2))
+    mask = np.logical_and(-1 <= x, x <= 1)
+    result = np.zeros_like(x)
+    result[mask] = 1 / (np.pi * np.sqrt(1 - x[mask]**2))
+    return result
 
 
 def Rinv_phi(n, k, N):
@@ -40,26 +44,16 @@ t = np.linspace(0, 1000, N)
 phi_process = Rinv_phi(n, delta, N)
 X = np.sin(omega_0 * t + phi_process)
 
-plt.figure(figsize=(10, 6))
-# Let's plot the values of the random variable
-plt.plot(t, phi_process, color="GREEN")
-mplcyberpunk.add_glow_effects()
-mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
-plt.xlabel('$t$')
-plt.ylabel(r'$\varphi(t)$')
-plt.title('Phase')
+# Use numpy.histogram to get values p and bins
+p, bins = np.histogram(X, bins=400, density=True)
 
-plt.figure(figsize=(10, 6))
-scatter = plt.scatter(t, X, s=np.ones(N), c=t, cmap='jet')
-plt.ylabel(r'$X(t)$')
-plt.xlabel('t')
-plt.title(f'Realizations of random processes')
-cbar = plt.colorbar(scatter, label='Time')
-cbar.set_label('Time', rotation=270, labelpad=15)
+# Normalize the histogram
+delta_x = bins[1] - bins[0]
+p = p / (np.sum(p) * delta_x)
 
-# Let's draw a histogram of the distribution
+# Plot the histogram and the theoretical density
 plt.figure()
-p, bins, patches = plt.hist(X, 400, density=True, color="RED", label='Experimental')
+plt.plot(bins[:-1], p, color="RED", label='Experimental', linewidth=2)
 x_theoretical = np.linspace(-1, 1, 1000)
 p_theoretical = p_x_theoretical(x_theoretical)
 plt.plot(x_theoretical, p_theoretical, label='Theoretical', color='BLUE')
@@ -70,7 +64,6 @@ plt.title('Experimental and Theoretical Distribution Density')
 plt.legend()
 
 # search for moments, central moments, and cumulants
-delta_x = bins[1:] - bins[:-1]  # lengths of partition
 x = bins[:-1]  # beginnings of intervals
 k = 6  # maximum order of moments from the condition
 
@@ -87,5 +80,29 @@ logger.info('\nCentral moments: \n%s', mu[1:])
 logger.info('\nCumulants: \n%s', sem[1:])
 logger.info('\nNormalized central moments: \n%s', norm_mu[1:])
 logger.info('\nNormalized cumulants: \n%s', norm_sem[1:])
+
+# Calculate moments using the formulas
+alpha = beta = 1 / 2
+
+moment_n_alpha_beta = gamma(1 + alpha + beta) / (gamma(1 + alpha) * gamma(beta))
+moment_alpha_beta = gamma(alpha + beta) / (gamma(alpha) * gamma(beta))
+
+logger.info('\nMoment B(n+alpha, beta) / B(alpha, beta): %.4f', moment_n_alpha_beta / moment_alpha_beta)
+
+# Calculate skewness (κ3)
+s = 5  # for example, you can replace it with the actual value
+skewness_denominator = alpha * beta * 2 * (beta - alpha) * (alpha + beta + 2)
+
+if skewness_denominator != 0:
+    skewness = (s * (alpha + beta + 1)) / skewness_denominator
+    logger.info('\nSkewness (κ3): %.4f', skewness)
+else:
+    logger.warning('\nSkewness (κ3) is undefined due to division by zero.')
+
+
+# Calculate kurtosis (κ4)
+kurtosis = (6 * alpha**3 + alpha**2 * (1 - 2 * beta) - 2 * alpha * beta * (beta + 2) + beta**2 * (beta + 1)) / (
+        alpha * beta * (alpha + beta + 2) * (alpha + beta + 3))
+logger.info('\nKurtosis (κ4): %.4f', kurtosis)
 
 plt.show()
