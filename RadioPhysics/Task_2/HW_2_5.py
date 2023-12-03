@@ -42,7 +42,8 @@ X = np.sin(omega_0 * t + phi_process)
 
 plt.figure(figsize=(10, 6))
 # Let's plot the values of the random variable
-plt.plot(t, phi_process, color="GREEN")
+plt.plot(t, phi_process, color="GREEN", linewidth=2.0, label='Original')
+plt.xlim([0, 100])
 mplcyberpunk.add_glow_effects()
 mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
 plt.xlabel('$t$')
