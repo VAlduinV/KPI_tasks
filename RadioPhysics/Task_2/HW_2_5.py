@@ -27,21 +27,31 @@ def Rinv_phi(n, k, N):
     return phi
 
 
-# parameters from condition
-N = 2 ** 14  # number of process elements
+def generate_modulating_signal(t, A, f_m):
+    return A * np.sin(2 * np.pi * f_m * t)
+
+
+# Parameters from the condition
+N = 2 ** 14  # Number of process elements
 n = 512
 omega_0 = np.pi / 64
 delta = 0.002
 
-# moments of time
+# Moments of time
 t = np.linspace(0, 1000, N)
 
-# generation random process
+# Generation of random process P(phi)
 phi_process = Rinv_phi(n, delta, N)
-X = np.sin(omega_0 * t + phi_process)
+
+# Generation of modulating signal
+A_modulating = 0.5  # Amplitude of the modulating signal
+f_modulating = 0.01  # Frequency of the modulating signal
+modulating_signal = generate_modulating_signal(t, A_modulating, f_modulating)
+
+# Generation of phase-modulated signal
+X = np.sin(omega_0 * t + phi_process + modulating_signal)
 
 plt.figure(figsize=(10, 6))
-# Let's plot the values of the random variable
 plt.plot(t, phi_process, color="GREEN", linewidth=2.0, label='Original')
 plt.xlim([0, 100])
 mplcyberpunk.add_glow_effects()
@@ -54,11 +64,11 @@ plt.figure(figsize=(10, 6))
 scatter = plt.scatter(t, X, s=np.ones(N), c=t, cmap='jet')
 plt.ylabel(r'$X(t)$')
 plt.xlabel('t')
-plt.title(f'Realizations of random processes')
+plt.title('Realizations of random processes')
 cbar = plt.colorbar(scatter, label='Time')
 cbar.set_label('Time', rotation=270, labelpad=15)
 
-# Let's draw a histogram of the distribution
+# Draw a histogram of the distribution
 plt.figure()
 p, bins, patches = plt.hist(X, 400, density=True, color="RED", label='Experimental')
 x_theoretical = np.linspace(-1, 1, 1000)
@@ -70,17 +80,17 @@ plt.ylabel('p(x)')
 plt.title('Experimental and Theoretical Distribution Density')
 plt.legend()
 
-# search for moments, central moments, and cumulants
-delta_x = bins[1:] - bins[:-1]  # lengths of partition
-x = bins[:-1]  # beginnings of intervals
-k = 6  # maximum order of moments from the condition
+# Search for moments, central moments, and cumulants
+delta_x = bins[1:] - bins[:-1]  # Lengths of partition
+x = bins[:-1]  # Beginnings of intervals
+k = 6  # Maximum order of moments from the condition
 
-mean = [np.sum(x ** i * p * delta_x) for i in range(k + 1)]  # the first k moments
-mu = [np.sum((x - mean[1]) ** i * p * delta_x) for i in range(k + 1)]  # the first k central moments
+mean = [np.sum(x ** i * p * delta_x) for i in range(k + 1)]  # The first k moments
+mu = [np.sum((x - mean[1]) ** i * p * delta_x) for i in range(k + 1)]  # The first k central moments
 sem = [0, mean[1], mu[2], mu[3], mu[4] - 3 * mu[2] ** 2,
-       mu[5] - 10 * mu[3] * mu[2], mu[6] - 15 * mu[4] * mu[2] + 30 * mu[2] ** 3]  # the first k cumulants
-norm_mu = [mu[i] / mu[2] ** (i / 2) for i in range(k + 1)]  # normalized central moments
-norm_sem = [sem[i] / mu[2] ** (i / 2) for i in range(k + 1)]  # normalized cumulants
+       mu[5] - 10 * mu[3] * mu[2], mu[6] - 15 * mu[4] * mu[2] + 30 * mu[2] ** 3]  # The first k cumulants
+norm_mu = [mu[i] / mu[2] ** (i / 2) for i in range(k + 1)]  # Normalized central moments
+norm_sem = [sem[i] / mu[2] ** (i / 2) for i in range(k + 1)]  # Normalized cumulants
 
 # Logging the results
 logger.info('\nMoments: \n%s', mean[1:])
